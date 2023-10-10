@@ -7,23 +7,13 @@ spec:
   selector:
     istio: ingressgateway
   servers:
-  - hosts:
-    - canary.33test.dev-sandbox.fpcomplete.com
-    port:
-      name: https-httpbin
-      number: 443
-      protocol: HTTPS
-    tls:
-      credentialName: httpbin-ingress-cert
-      mode: SIMPLE
-  - hosts:
-    - canary.33test.dev-sandbox.fpcomplete.com
-    port:
+  - port:
       name: http-httpbin
       number: 80
       protocol: HTTP
-    tls:
-      httpsRedirect: true
+    hosts:
+    - "*"
+    
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -34,7 +24,7 @@ spec:
   gateways:
   - httpbin-gateway
   hosts:
-  - canary.33test.dev-sandbox.fpcomplete.com
+  - helloworld.cloudautomate.in
   http:
   - route:
     - destination:
