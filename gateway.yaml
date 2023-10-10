@@ -1,0 +1,43 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: httpbin-gateway
+  namespace: canary
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - canary.33test.dev-sandbox.fpcomplete.com
+    port:
+      name: https-httpbin
+      number: 443
+      protocol: HTTPS
+    tls:
+      credentialName: httpbin-ingress-cert
+      mode: SIMPLE
+  - hosts:
+    - canary.33test.dev-sandbox.fpcomplete.com
+    port:
+      name: http-httpbin
+      number: 80
+      protocol: HTTP
+    tls:
+      httpsRedirect: true
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: httpbin
+  namespace: canary
+spec:
+  gateways:
+  - httpbin-gateway
+  hosts:
+  - canary.33test.dev-sandbox.fpcomplete.com
+  http:
+  - route:
+    - destination:
+        host: httpbin.canary.svc.cluster.local
+        port:
+          number: 8000
