@@ -31,3 +31,24 @@ spec:
         host: httpbin.canary.svc.cluster.local
         port:
           number: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/scheme: internet-facing
+  name: istio-hellow-alb-new
+  namespace: istio-system
+spec:
+  ingressClassName: alb  
+  rules:  
+  - http:
+      paths:
+      - backend:
+          service:
+            name: istio-ingressgateway
+            port:
+              number: 80
+        path: /*
+        pathType: ImplementationSpecific
